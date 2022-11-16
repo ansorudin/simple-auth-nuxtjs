@@ -184,6 +184,17 @@ const actions = {
     })
     dispatch('profile')
   },
+
+  async coverPhoto({ rootState, dispatch }, payload) {
+    const formData = new FormData()
+    formData.append('image', payload.image)
+    await this.$axios.post('/api/uploads/cover', formData, {
+      headers: {
+        Authorization: rootState.token,
+      },
+    })
+    dispatch('profile')
+  },
 }
 
 export default () =>

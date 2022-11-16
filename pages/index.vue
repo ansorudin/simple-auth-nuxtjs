@@ -1,13 +1,27 @@
 <template>
   <div v-if="userData" class="mt-14">
     <div class="wrapper-header">
-      <img
-        :src="userData.cover_picture.url"
-        alt="header"
-        width="100%"
-        height="300px"
-        style="object-fit: cover; border-radius: 0.5rem"
-      />
+      <div style="position: relative">
+        <img
+          :src="userData.cover_picture.url"
+          alt="header"
+          width="100%"
+          height="300px"
+          style="object-fit: cover; border-radius: 0.5rem"
+        />
+        <div style="position: absolute; bottom: 20px; right: 10px">
+          <v-file-input
+            v-if="!coverFile"
+            v-model="coverFile"
+            hide-input
+            prepend-icon="mdi-camera"
+          ></v-file-input>
+          <div v-else class="d-flex flex-column align-start">
+            <v-chip>{{ coverFile?.name }}</v-chip>
+            <v-btn @click="changeCover" class="mt-2">Change Cover</v-btn>
+          </div>
+        </div>
+      </div>
       <img
         :src="userData.user_picture.picture.url"
         alt="avatar"
@@ -269,6 +283,7 @@ export default {
         user_pictures: [],
       },
       fileGallery: [],
+      coverFile: null,
       photoSelected: {},
       dialog: false,
       menuDate1: false,
@@ -286,8 +301,8 @@ export default {
     users(newValue) {
       this.userData = newValue
     },
-    fileGallery(newValue) {
-      console.log(newValue)
+    coverFile(n) {
+      console.log(n)
     },
   },
   mounted() {
@@ -340,6 +355,12 @@ export default {
         id: this.photoSelected.id,
       })
       this.dialog = val
+    },
+    changeCover() {
+      this.$store.dispatch('coverPhoto', {
+        image: this.coverFile,
+      })
+      this.coverFile = null
     },
   },
 }
