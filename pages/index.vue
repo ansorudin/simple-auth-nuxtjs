@@ -1,11 +1,399 @@
 <template>
-  <p>Ini Profile</p>
+  <div v-if="userData" class="mt-14">
+    <div class="wrapper-header">
+      <img
+        :src="userData.cover_picture.url"
+        alt="header"
+        width="100%"
+        height="300px"
+        style="object-fit: cover; border-radius: 0.5rem"
+      />
+      <img
+        :src="userData.user_picture.picture.url"
+        alt="avatar"
+        class="avatar-header"
+      />
+    </div>
+    <div class="wrapper-content">
+      <div class="wrapper-gallery">
+        <div class="wrapper-card-gallery">
+          <h3 class="text-body-1">Gallery Image</h3>
+          <div class="wrapper-card-image">
+            <img
+              v-for="(pic, idx) in userData.user_pictures"
+              :key="idx"
+              :src="pic?.picture.url"
+              class="card-image"
+              @click="clickedPhoto(pic)"
+            />
+          </div>
+          <div>
+            <v-file-input
+              v-model="fileGallery"
+              multiple
+              label="File input"
+            ></v-file-input>
+            <v-btn v-if="fileGallery.length > 0" @click="submitPhoto"
+              >Submit Photos</v-btn
+            >
+          </div>
+        </div>
+      </div>
+      <div class="wrapper-form">
+        <div class="pa-3">
+          <h3 class="text-heading-6">Personal Information</h3>
+          <div class="form-type-1">
+            <v-text-field v-model="userData.name" placeholder="Name" />
+            <v-menu
+              ref="menuDate1"
+              v-model="menuDate1"
+              :close-on-content-click="false"
+              :return-value.sync="userData.birthday"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="userData.birthday"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  placeholder="Birthday"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="userData.birthday" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menuDate1 = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menuDate1.save(userData.birthday)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </div>
+          <div class="form-type-1">
+            <v-text-field v-model="userData.hometown" placeholder="Home Town" />
+            <v-text-field v-model="userData.bio" placeholder="Bio" />
+          </div>
+          <v-btn @click="submitPersonalInformation">Submit</v-btn>
+        </div>
+        <!-- Section Education -->
+        <div class="pa-3 mt-5">
+          <h3 class="text-heading-6">Education</h3>
+          <div class="form-type-1">
+            <v-text-field
+              v-model="userData.education.school_name"
+              placeholder="School Name"
+            />
+            <v-menu
+              ref="menuDate2"
+              v-model="menuDate2"
+              :close-on-content-click="false"
+              :return-value.sync="userData.education.graduation_time"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="userData.education.graduation_time"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  placeholder="Graduation Date"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="userData.education.graduation_time"
+                no-title
+                scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menuDate2 = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="
+                    $refs.menuDate2.save(userData.education.graduation_time)
+                  "
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </div>
+          <v-btn @click="submitEducation">Submit</v-btn>
+        </div>
+        <!-- Section Career -->
+        <div class="pa-3 mt-5">
+          <h3 class="text-heading-6">Career</h3>
+          <div class="form-type-1">
+            <v-text-field placeholder="Position" />
+            <v-text-field
+              v-model="userData.career.company_name"
+              placeholder="Company Name"
+            />
+          </div>
+          <div class="form-type-1">
+            <v-menu
+              ref="menuDate3"
+              v-model="menuDate3"
+              :close-on-content-click="false"
+              :return-value.sync="userData.career.ending_in"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="userData.career.ending_in"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  placeholder="Strating Date"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="userData.career.ending_in"
+                no-title
+                scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menuDate3 = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menuDate3.save(userData.career.ending_in)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+            <v-menu
+              ref="menuDate4"
+              v-model="menuDate4"
+              :close-on-content-click="false"
+              :return-value.sync="userData.career.starting_from"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="userData.career.starting_from"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  placeholder="End Date"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="userData.career.starting_from"
+                no-title
+                scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menuDate4 = false">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menuDate4.save(userData.career.starting_from)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </div>
+          <v-btn @click="submitCareer">Submit</v-btn>
+        </div>
+      </div>
+    </div>
+    <DialogSelectPhotoVue
+      :dialog="dialog"
+      :photoSelected="photoSelected?.picture?.url"
+      @closeDialog="closeDialog"
+      @changeAvatar="changeAvatar"
+    />
+  </div>
 </template>
 
 <script>
+import DialogSelectPhotoVue from '../components/DialogSelectPhoto.vue'
 export default {
   name: 'IndexPage',
+  components: {
+    DialogSelectPhotoVue,
+  },
   middleware: 'auth',
-  mounted() {},
+  data() {
+    return {
+      userData: {
+        age: 0,
+        bio: '',
+        birthday: '',
+        career: {
+          company_name: '',
+          ending_in: '',
+          starting_from: '',
+        },
+        cover_picture: {
+          url: '',
+        },
+        education: {
+          graduation_time: '',
+          school_name: '',
+        },
+        hometown: '',
+        name: '',
+        user_picture: {
+          picture: {
+            url: '',
+          },
+        },
+        user_pictures: [],
+      },
+      fileGallery: [],
+      photoSelected: {},
+      dialog: false,
+      menuDate1: false,
+      menuDate2: false,
+      menuDate3: false,
+      menuDate4: false,
+    }
+  },
+  computed: {
+    users() {
+      return this.$store.getters.getUser
+    },
+  },
+  watch: {
+    users(newValue) {
+      this.userData = newValue
+    },
+    fileGallery(newValue) {
+      console.log(newValue)
+    },
+  },
+  mounted() {
+    this.$store.dispatch('profile')
+  },
+  methods: {
+    submitPersonalInformation() {
+      this.$store.dispatch('personalInformation', {
+        name: this.userData.name,
+        birthday: this.userData.birthday,
+        hometown: this.userData.hometown,
+        bio: this.userData.bio,
+      })
+    },
+    submitEducation() {
+      this.$store.dispatch('education', {
+        school_name: this.userData.education.school_name,
+        graduation_time: this.userData.education.graduation_time,
+      })
+    },
+    submitCareer() {
+      this.$store.dispatch('career', {
+        company_name: this.userData.career.company_name,
+        position: 'penyuplai',
+        ending_in: this.userData.career.ending_in,
+        starting_from: this.userData.career.starting_from,
+      })
+    },
+    submitPhoto() {
+      this.$store
+        .dispatch('photos', {
+          photos: this.fileGallery,
+        })
+        .then(() => {
+          this.fileGallery = []
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
+    },
+    closeDialog(val) {
+      this.dialog = val
+    },
+    clickedPhoto(val) {
+      this.dialog = true
+      this.photoSelected = val
+    },
+    changeAvatar(val) {
+      this.$store.dispatch('avatar', {
+        id: this.photoSelected.id,
+      })
+      this.dialog = val
+    },
+  },
 }
 </script>
+
+<style>
+.wrapper-header {
+  position: relative;
+}
+.avatar-header {
+  width: 12.5rem;
+  height: 12.5rem;
+  object-fit: cover;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -6.25rem;
+  left: 1.25rem;
+}
+.wrapper-content {
+  margin-top: 0.9375rem;
+  display: flex;
+}
+.wrapper-gallery {
+  width: 30%;
+  padding-top: 6.25rem;
+}
+
+.wrapper-form {
+  flex: 1;
+}
+.wrapper-card-gallery {
+  padding: 0.625rem;
+}
+.card-image {
+  width: 100%;
+  height: 9.375rem;
+  cursor: pointer;
+  border: 0.0625rem solid gray;
+  object-fit: cover;
+}
+.wrapper-card-image {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-top: 0.9375rem;
+}
+
+.wrapper-card-image img {
+  border-radius: 0.25rem;
+}
+
+.form-type-1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+</style>

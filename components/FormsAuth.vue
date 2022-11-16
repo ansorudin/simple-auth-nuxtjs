@@ -122,26 +122,26 @@ export default {
     submit() {
       switch (this.type) {
         case 'register':
-          try {
-            this.$store.dispatch('register', {
+          this.$store
+            .dispatch('register', {
               phoneNumber: this.phoneNumber,
               password: this.password,
               country: this.country,
             })
-          } catch (error) {
-            console.log(error)
-          }
+            .catch((err) => {
+              console.error(err.response)
+            })
 
           break
         default:
-          try {
-            this.$store.dispatch('login', {
+          this.$store
+            .dispatch('login', {
               phoneNumber: this.phoneNumber,
               password: this.password,
             })
-          } catch (error) {
-            console.log(error)
-          }
+            .catch((err) => {
+              console.error(err.response)
+            })
 
           break
       }
