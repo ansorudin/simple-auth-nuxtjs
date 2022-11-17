@@ -308,7 +308,7 @@ export default {
   },
   methods: {
     submitPersonalInformation() {
-      this.$store.dispatch('personalInformation', {
+      this.$store.dispatch('dashboardModules/personalInformation', {
         name: this.userData.name,
         birthday: this.userData.birthday,
         hometown: this.userData.hometown,
@@ -316,13 +316,13 @@ export default {
       })
     },
     submitEducation() {
-      this.$store.dispatch('education', {
+      this.$store.dispatch('dashboardModules/education', {
         school_name: this.userData.education.school_name,
         graduation_time: this.userData.education.graduation_time,
       })
     },
     submitCareer() {
-      this.$store.dispatch('career', {
+      this.$store.dispatch('dashboardModules/career', {
         company_name: this.userData.career.company_name,
         position: 'penyuplai',
         ending_in: this.userData.career.ending_in,
@@ -331,7 +331,7 @@ export default {
     },
     submitPhoto() {
       this.$store
-        .dispatch('photos', {
+        .dispatch('dashboardModules/photos', {
           photos: this.fileGallery,
         })
         .then(() => {
@@ -349,13 +349,13 @@ export default {
       this.photoSelected = val
     },
     changeAvatar(val) {
-      this.$store.dispatch('avatar', {
+      this.$store.dispatch('dashboardModules/avatar', {
         id: this.photoSelected.id,
       })
       this.dialog = val
     },
     changeCover() {
-      this.$store.dispatch('coverPhoto', {
+      this.$store.dispatch('dashboardModules/coverPhoto', {
         image: this.coverFile,
       })
       this.coverFile = null
