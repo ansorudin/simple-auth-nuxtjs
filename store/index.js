@@ -1,22 +1,20 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import Cookies from 'universal-cookie'
-import { defaultMutations } from 'vuex-easy-access'
-import dashboard from './modules/dashboard'
+import EasyAccess, { defaultMutations } from 'vuex-easy-access'
 
-Vue.use(Vuex)
-const state = {
+export const state = () => ({
   authenticated: false,
   token: '',
+  text: '',
   user: {},
-}
+})
 
-const getters = {
+export const getters = {
   isAuth: (state) => state.authenticated,
   getUser: (state) => state.user,
 }
-const mutations = {
-  ...defaultMutations(state),
+
+export const mutations = {
+  ...defaultMutations(state()),
   SET_AUTHENTICATED(state, payload) {
     state.authenticated = payload
   },
@@ -28,7 +26,9 @@ const mutations = {
   },
 }
 
-const actions = {
+export const plugins = [EasyAccess()]
+
+export const actions = {
   nuxtServerInit({ commit, dispatch }, { req }) {
     const cookies = new Cookies(req.headers.cookie)
     const token = cookies.get('token_test')
@@ -121,16 +121,3 @@ const actions = {
     this.$router.push('/login')
   },
 }
-
-const modules = {
-  dashboardModules: dashboard,
-}
-
-export default () =>
-  new Vuex.Store({
-    state,
-    getters,
-    mutations,
-    actions,
-    modules,
-  })

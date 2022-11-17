@@ -1,34 +1,21 @@
 <!-- eslint-disable vue/attribute-hyphenation -->
 <template>
   <div v-if="userData" class="mt-14">
-    <div class="wrapper-header">
-      <div style="position: relative">
-        <img
-          :src="userData.cover_picture.url"
-          alt="header"
-          width="100%"
-          height="300px"
-          style="object-fit: cover; border-radius: 0.5rem"
-        />
-        <div style="position: absolute; bottom: 20px; right: 10px">
-          <v-file-input
-            v-if="!coverFile"
-            v-model="coverFile"
-            hide-input
-            prepend-icon="mdi-camera"
-          ></v-file-input>
-          <div v-else class="d-flex flex-column align-start">
-            <v-chip>{{ coverFile?.name }}</v-chip>
-            <v-btn class="mt-2" @click="changeCover">Change Cover</v-btn>
-          </div>
-        </div>
+    <HeaderDashboardVue
+      :avatar="userData.user_picture.picture.url"
+      :coverPhoto="userData.cover_picture.url"
+    >
+      <v-file-input
+        v-if="!coverFile"
+        v-model="coverFile"
+        hide-input
+        prepend-icon="mdi-camera"
+      ></v-file-input>
+      <div v-else class="d-flex flex-column align-start">
+        <v-chip>{{ coverFile?.name }}</v-chip>
+        <v-btn class="mt-2" @click="changeCover">Change Cover</v-btn>
       </div>
-      <img
-        :src="userData.user_picture.picture.url"
-        alt="avatar"
-        class="avatar-header"
-      />
-    </div>
+    </HeaderDashboardVue>
     <div class="wrapper-content">
       <div class="wrapper-gallery">
         <div class="wrapper-card-gallery">
@@ -250,10 +237,12 @@
 
 <script>
 import DialogSelectPhotoVue from '../components/dashboard/DialogSelectPhoto.vue'
+import HeaderDashboardVue from '../components/dashboard/HeaderDashboard.vue'
 export default {
   name: 'IndexPage',
   components: {
     DialogSelectPhotoVue,
+    HeaderDashboardVue,
   },
   middleware: 'auth',
   data() {
@@ -297,41 +286,65 @@ export default {
     users() {
       return this.$store.getters.getUser
     },
+    basic: {
+      get() {
+        return this.$store.getters.getUser
+      },
+    },
   },
   watch: {
     users(newValue) {
-      this.userData = newValue
+      this.userData = JSON.parse(JSON.stringify(newValue))
     },
   },
   mounted() {
     this.$store.dispatch('profile')
   },
   methods: {
+    increment() {
+      this.$store.dispatch('test/setIncrement', 10)
+    },
+    changeText() {
+      this.$store.set('text', 'ini udah berubah ya')
+    },
+
     submitPersonalInformation() {
-      this.$store.dispatch('dashboardModules/personalInformation', {
-        name: this.userData.name,
-        birthday: this.userData.birthday,
-        hometown: this.userData.hometown,
-        bio: this.userData.bio,
-      })
+      this.$store
+        .dispatch('dashboard/personalInformation', {
+          name: this.userData.name,
+          birthday: this.userData.birthday,
+          hometown: this.userData.hometown,
+          bio: this.userData.bio,
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
     },
     submitEducation() {
-      this.$store.dispatch('dashboardModules/education', {
-        school_name: this.userData.education.school_name,
-        graduation_time: this.userData.education.graduation_time,
-      })
+      this.$store
+        .dispatch('dashboard/education', {
+          school_name: this.userData.education.school_name,
+          graduation_time: this.userData.education.graduation_time,
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
     },
     submitCareer() {
-      this.$store.dispatch('dashboardModules/career', {
-        company_name: this.userData.career.company_name,
-        position: 'penyuplai',
-        ending_in: this.userData.career.ending_in,
-        starting_from: this.userData.career.starting_from,
-      })
+      this.$store
+        .dispatch('dashboard/career', {
+          company_name: this.userData.career.company_name,
+          position: 'penyuplai',
+          ending_in: this.userData.career.ending_in,
+          starting_from: this.userData.career.starting_from,
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
     },
     submitPhoto() {
       this.$store
-        .dispatch('dashboardModules/photos', {
+        .dispatch('dashboard/photos', {
           photos: this.fileGallery,
         })
         .then(() => {
@@ -349,15 +362,23 @@ export default {
       this.photoSelected = val
     },
     changeAvatar(val) {
-      this.$store.dispatch('dashboardModules/avatar', {
-        id: this.photoSelected.id,
-      })
+      this.$store
+        .dispatch('dashboard/avatar', {
+          id: this.photoSelected.id,
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
       this.dialog = val
     },
     changeCover() {
-      this.$store.dispatch('dashboardModules/coverPhoto', {
-        image: this.coverFile,
-      })
+      this.$store
+        .dispatch('dashboard/coverPhoto', {
+          image: this.coverFile,
+        })
+        .catch((err) => {
+          console.error(err.response)
+        })
       this.coverFile = null
     },
   },

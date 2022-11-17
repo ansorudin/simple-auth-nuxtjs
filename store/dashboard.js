@@ -22,8 +22,8 @@ export default {
 
     async education({ rootState, dispatch }, payload) {
       const form = new FormData()
-      form.append('school_name', payload.name)
-      form.append('graduation_time', payload.birthday)
+      form.append('school_name', payload.school_name)
+      form.append('graduation_time', payload.graduation_time)
       await this.$axios.post('/api/profile/education', form, {
         headers: {
           Authorization: rootState.token,
