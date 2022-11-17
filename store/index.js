@@ -15,28 +15,19 @@ export const getters = {
 
 export const mutations = {
   ...defaultMutations(state()),
-  SET_AUTHENTICATED(state, payload) {
-    state.authenticated = payload
-  },
-  SET_USER(state, payload) {
-    state.user = payload
-  },
-  SET_TOKEN(state, payload) {
-    state.token = payload
-  },
 }
 
 export const plugins = [EasyAccess()]
 
 export const actions = {
-  nuxtServerInit({ commit, dispatch }, { req }) {
+  nuxtServerInit({ dispatch }, { req }) {
     const cookies = new Cookies(req.headers.cookie)
     const token = cookies.get('token_test')
     if (token) {
-      commit('SET_AUTHENTICATED', true)
-      commit('SET_TOKEN', token)
+      dispatch('set/token', token)
+      dispatch('set/authenticated', true)
     } else {
-      commit('SET_AUTHENTICATED', false)
+      dispatch('set/authenticated', false)
     }
   },
 
@@ -53,13 +44,13 @@ export const actions = {
 
     if (data.data.user.access_token) {
       cookies.set('token_test', data.data.user.access_token)
-      commit('SET_TOKEN', data.data.user.access_token)
-      commit('SET_AUTHENTICATED', true)
+      dispatch('set/token', data.data.user.access_token)
+      dispatch('set/authenticated', true)
       this.$router.push('/')
     }
   },
 
-  async register({ commit }, payload) {
+  async register({ commit, dispatch }, payload) {
     const cookies = new Cookies()
     const form = new FormData()
     form.append('phone', payload.phoneNumber)
@@ -72,7 +63,7 @@ export const actions = {
     const { data } = await this.$axios.post('/api/register', form)
 
     cookies.set('user_id_test', data.data.user.id)
-    commit('SET_USER', data.data.user)
+    dispatch('set/user', data.data.user)
     this.$router.push('/otp-input')
   },
 
@@ -87,37 +78,37 @@ export const actions = {
 
     if (data.data.user.access_token) {
       cookies.set('token_test', data.data.user.access_token)
-      commit('SET_TOKEN', data.data.user.access_token)
-      commit('SET_AUTHENTICATED', true)
+      dispatch('token', data.data.user.access_token)
+      dispatch('authenticated', true)
       this.$router.push('/')
     }
   },
 
-  async requestSendOtp({ commit, rootState }) {
+  async requestSendOtp({ dispatch, rootState }) {
     const cookies = new Cookies()
     const form = new FormData()
     form.append('phone', rootState.user.phone)
     const { data } = await this.$axios.post('/api/register/otp/request', form)
 
     cookies.set('user_id_test', data.data.user.id)
-    commit('SET_USER', data.data.user)
+    dispatch('set/user', data.data.user)
     this.$router.push('/otp-input')
   },
 
-  async profile({ commit, rootState }) {
+  async profile({ rootState, dispatch }) {
     const { data } = await this.$axios.get('/api/profile/me', {
       headers: {
         Authorization: rootState.token,
       },
     })
-    commit('SET_USER', data.data.user)
+    dispatch('set/user', data.data.user)
   },
 
-  logout({ commit }) {
+  logout({ dispatch }) {
     const cookies = new Cookies()
     cookies.remove('token_test')
-    commit('SET_AUTHENTICATED', false)
-    commit('SET_TOKEN', '')
+    dispatch('set/authenticated', false)
+    dispatch('set/token', '')
     this.$router.push('/login')
   },
 }
