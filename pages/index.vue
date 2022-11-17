@@ -42,10 +42,11 @@
         </div>
       </div>
       <div class="wrapper-form">
+        <!-- Section Personal Information -->
         <div class="pa-3">
           <h3 class="text-heading-6">Personal Information</h3>
           <div class="form-type-1">
-            <v-text-field v-model="userData.name" placeholder="Name" />
+            <v-text-field :value="userData.name" placeholder="Name" />
             <v-menu
               ref="menuDate1"
               v-model="menuDate1"

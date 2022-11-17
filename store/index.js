@@ -15,19 +15,25 @@ export const getters = {
 
 export const mutations = {
   ...defaultMutations(state()),
+  SET_TOKEN(state, payload) {
+    state.token = payload
+  },
+  SET_AUTHENTICATED(state, payload) {
+    state.authenticated = payload
+  },
 }
 
 export const plugins = [EasyAccess()]
 
 export const actions = {
-  nuxtServerInit({ dispatch }, { req }) {
+  nuxtServerInit(context, { req }) {
     const cookies = new Cookies(req.headers.cookie)
     const token = cookies.get('token_test')
     if (token) {
-      dispatch('set/token', token)
-      dispatch('set/authenticated', true)
+      context.commit('SET_TOKEN', token)
+      context.commit('SET_AUTHENTICATED', true)
     } else {
-      dispatch('set/authenticated', false)
+      context.commit('SET_AUTHENTICATED', false)
     }
   },
 
