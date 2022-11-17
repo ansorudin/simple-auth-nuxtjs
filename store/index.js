@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Cookies from 'universal-cookie'
+import { defaultMutations } from 'vuex-easy-access'
 
 Vue.use(Vuex)
 const state = {
@@ -14,6 +15,7 @@ const getters = {
   getUser: (state) => state.user,
 }
 const mutations = {
+  ...defaultMutations(state),
   SET_AUTHENTICATED(state, payload) {
     state.authenticated = payload
   },

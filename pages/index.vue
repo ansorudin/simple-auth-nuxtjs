@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/attribute-hyphenation -->
 <template>
   <div v-if="userData" class="mt-14">
     <div class="wrapper-header">
@@ -18,7 +19,7 @@
           ></v-file-input>
           <div v-else class="d-flex flex-column align-start">
             <v-chip>{{ coverFile?.name }}</v-chip>
-            <v-btn @click="changeCover" class="mt-2">Change Cover</v-btn>
+            <v-btn class="mt-2" @click="changeCover">Change Cover</v-btn>
           </div>
         </div>
       </div>
@@ -248,7 +249,7 @@
 </template>
 
 <script>
-import DialogSelectPhotoVue from '../components/DialogSelectPhoto.vue'
+import DialogSelectPhotoVue from '../components/dashboard/DialogSelectPhoto.vue'
 export default {
   name: 'IndexPage',
   components: {
@@ -300,9 +301,6 @@ export default {
   watch: {
     users(newValue) {
       this.userData = newValue
-    },
-    coverFile(n) {
-      console.log(n)
     },
   },
   mounted() {

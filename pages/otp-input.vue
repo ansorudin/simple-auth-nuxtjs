@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import FormOtp from '../components/FormOtp.vue'
+import FormOtp from '../components/auth/FormOtp.vue'
 export default {
   name: 'OtpInput',
   components: {

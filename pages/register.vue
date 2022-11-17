@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import FormsAuthVue from '../components/FormsAuth.vue'
+import FormsAuthVue from '../components/auth/FormsAuth.vue'
 export default {
   name: 'RegisterPage',
   components: {
