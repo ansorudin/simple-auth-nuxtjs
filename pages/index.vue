@@ -437,4 +437,14 @@ export default {
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
+
+@media (max-width: 37.5rem) {
+  .wrapper-content {
+    flex-direction: column;
+  }
+
+  .wrapper-gallery {
+    width: 100%;
+  }
+}
 </style>
