@@ -447,4 +447,10 @@ export default {
     width: 100%;
   }
 }
+
+@media (min-width: 37.5rem) and (max-width: 50rem) {
+  .wrapper-card-image {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
