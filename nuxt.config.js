@@ -44,13 +44,12 @@ export default {
 
   modules: ['@nuxtjs/axios'],
   axios: {
-    // baseURL: 'http://pretest-qa.dcidev.id/api/v1/',
     proxy: true,
   },
 
   proxy: {
     '/api/': {
-      target: 'http://pretest-qa.dcidev.id/api/v1/',
+      target: process.env.BASE_URL,
       pathRewrite: { '^/api/': '' },
     },
   },
